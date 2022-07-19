@@ -3,7 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:tcc_henrique/app/domain/entities/profile.dart';
 import 'package:tcc_henrique/app/domain/entities/selected_item.dart';
 import 'package:tcc_henrique/app/presentation/home/home_controller.dart';
+import 'package:tcc_henrique/app/presentation/login/login_page.dart';
 import 'package:tcc_henrique/app/presentation/receipt/receipt_page.dart';
+import 'package:tcc_henrique/app/presentation/register/register_page.dart';
 import 'package:tcc_henrique/app/presentation/widgets/custom_text_field_widget.dart';
 import 'package:tcc_henrique/app/presentation/widgets/loading_button_widget.dart';
 
@@ -16,6 +18,15 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      final controller = Provider.of<HomeController>(context, listen: false);
+      controller.onInit();
+    });
+  }
+
   List<SelectedItem> itens = [
     SelectedItem(
       name: 'Zona Nova',
@@ -65,6 +76,23 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
         title: Text('Olá ${widget.profile.name}'),
+        actions: [
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert),
+            onSelected: profileOptionsAction,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            itemBuilder: (BuildContext context) {
+              return Constants.choices.map((String choice) {
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                );
+              }).toList();
+            },
+          ),
+        ],
       ),
       body: Consumer<HomeController>(
         builder: (context, value, child) {
@@ -228,4 +256,24 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
+  void profileOptionsAction(String option) async {
+    switch (option) {
+      case "Editar perfil":
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => RegisterPage(profile: widget.profile)));
+        break;
+      case "Sair do App":
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const LoginPage()));
+        break;
+    }
+  }
+}
+
+class Constants {
+  static const String privacy = ("Editar perfil");
+  static const String logout = ("Sair do App");
+
+  static const List<String> choices = <String>[privacy, logout];
 }

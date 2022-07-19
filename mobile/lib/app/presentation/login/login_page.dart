@@ -55,6 +55,7 @@ class _LoginPageState extends State<LoginPage> {
                     CustomTextFormFieldWidget(
                       controller: value.passwordController,
                       labelText: 'Senha',
+                      leftIcon: const Icon(Icons.lock),
                       textInputType: TextInputType.visiblePassword,
                       icon: ShowPasswordWidget(
                         show: value.showPassword,

@@ -99,6 +99,7 @@ class LoginController with ChangeNotifier {
       notifyListeners();
 
       if (result.isRight()) {
+        clearController();
         return true;
       } else {
         return false;
@@ -108,5 +109,10 @@ class LoginController with ChangeNotifier {
       notifyListeners();
       return false;
     }
+  }
+
+  void clearController() {
+    emailController.text = '';
+    passwordController.text = '';
   }
 }

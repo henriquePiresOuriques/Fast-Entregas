@@ -75,6 +75,27 @@ class RegisterController with ChangeNotifier {
   bool _isError = false;
   bool get isError => _isError;
 
+  bool _isEdit = false;
+  bool get isEdit => _isEdit;
+
+  void onInit({Profile profile}) {
+    if (profile != null) {
+      nameController.text = profile.name;
+      emailController.text = profile.email;
+      districtController.text = profile.bairro;
+      streetController.text = profile.rua;
+      numberController.text = profile.numero;
+      complementController.text = profile.complemento;
+      referenceController.text = profile.referencia;
+      _isEdit = true;
+      notifyListeners();
+    } else {
+      _isEdit = false;
+      clearController();
+      notifyListeners();
+    }
+  }
+
   void nameValid(String name) {
     validate = registerValidate.validatingName(name);
     _nameError = validate.description;

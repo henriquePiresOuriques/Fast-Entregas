@@ -1,19 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tcc_henrique/app/presentation/login/login_page.dart';
+import 'package:tcc_henrique/app/domain/entities/profile.dart';
 import 'package:tcc_henrique/app/presentation/register/register_controller.dart';
 import 'package:tcc_henrique/app/presentation/widgets/custom_text_field_widget.dart';
 import 'package:tcc_henrique/app/presentation/widgets/loading_button_widget.dart';
 import 'package:tcc_henrique/app/presentation/widgets/show_password_widget.dart';
 
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({Key key}) : super(key: key);
+  final Profile profile;
+  const RegisterPage({Key key, this.profile}) : super(key: key);
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      final controller =
+          Provider.of<RegisterController>(context, listen: false);
+      if (widget.profile != null) {
+        controller.onInit(profile: widget.profile);
+      } else {
+        controller.onInit();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,39 +70,47 @@ class _RegisterPageState extends State<RegisterPage> {
                       value.emailIsValid,
                       value.emailError,
                     ),
+                    enabled: !value.isEdit,
                   ),
-                  const SizedBox(height: 16),
-                  CustomTextFormFieldWidget(
-                    controller: value.passwordController,
-                    labelText: 'Senha',
-                    textInputType: TextInputType.visiblePassword,
-                    icon: ShowPasswordWidget(
-                      show: value.showPassword,
-                      hidePassword: value.hidePassword,
-                    ),
-                    errorText: value.errorText(
-                      value.passwordIsValid,
-                      value.passwordError,
-                    ),
-                    obscureText: value.showPassword ? false : true,
-                    leftIcon: const Icon(Icons.lock),
-                  ),
-                  const SizedBox(height: 16),
-                  CustomTextFormFieldWidget(
-                    controller: value.confirmPasswordController,
-                    labelText: 'Confirmar senha',
-                    textInputType: TextInputType.visiblePassword,
-                    icon: ShowPasswordWidget(
-                      show: value.showConfirmPassword,
-                      hidePassword: value.hideConfirmPassword,
-                    ),
-                    errorText: value.errorText(
-                      value.confirmPasswordIsValid,
-                      value.confirmPasswordError,
-                    ),
-                    obscureText: value.showConfirmPassword ? false : true,
-                    leftIcon: const Icon(Icons.lock),
-                  ),
+                  value.isEdit
+                      ? const SizedBox()
+                      : Column(
+                          children: [
+                            const SizedBox(height: 16),
+                            CustomTextFormFieldWidget(
+                              controller: value.passwordController,
+                              labelText: 'Senha',
+                              textInputType: TextInputType.visiblePassword,
+                              icon: ShowPasswordWidget(
+                                show: value.showPassword,
+                                hidePassword: value.hidePassword,
+                              ),
+                              errorText: value.errorText(
+                                value.passwordIsValid,
+                                value.passwordError,
+                              ),
+                              obscureText: value.showPassword ? false : true,
+                              leftIcon: const Icon(Icons.lock),
+                            ),
+                            const SizedBox(height: 16),
+                            CustomTextFormFieldWidget(
+                              controller: value.confirmPasswordController,
+                              labelText: 'Confirmar senha',
+                              textInputType: TextInputType.visiblePassword,
+                              icon: ShowPasswordWidget(
+                                show: value.showConfirmPassword,
+                                hidePassword: value.hideConfirmPassword,
+                              ),
+                              errorText: value.errorText(
+                                value.confirmPasswordIsValid,
+                                value.confirmPasswordError,
+                              ),
+                              obscureText:
+                                  value.showConfirmPassword ? false : true,
+                              leftIcon: const Icon(Icons.lock),
+                            ),
+                          ],
+                        ),
                   const SizedBox(height: 24),
                   const Text(
                     'Endereço',

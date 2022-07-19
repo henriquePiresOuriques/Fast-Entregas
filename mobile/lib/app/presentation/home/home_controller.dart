@@ -39,6 +39,13 @@ class HomeController with ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
+  void onInit() {
+    streetController.text = '';
+    numberController.text = '';
+    complementController.text = '';
+    referenceController.text = '';
+  }
+
   void streetValid(String street) {
     validate = homeValidate.validatingField(street);
     _streetError = validate.description;
